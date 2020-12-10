@@ -1,0 +1,19 @@
+- hosts: loadbalancer
+  become: yes
+  tasks:
+  - name: Install lateest version of haproxy
+    yum:
+      name: haproxy
+      state: latest
+
+  - name: Configure haproxy in load balancer instance
+    template:
+      src: haproxy.cfg
+      dest: /etc/haproxy/haproxy.cfg
+
+  - name: restarting haproxy
+    service:
+      name: haproxy
+      state: restarted
+
+

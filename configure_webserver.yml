@@ -1,0 +1,20 @@
+- hosts: webserver
+  become: yes
+  tasks:
+  - name: Installing httpd server
+    yum:
+      name: httpd
+      state: latest
+
+  - name: Copying index.html to /var/www/html/ folder
+    template:
+      src: index.html
+      dest: /var/www/html/
+
+  - name: restarting httpd service
+    service:
+      name: httpd
+      state: restarted
+
+
+
