@@ -1,0 +1,56 @@
+- name: Configure Namenode
+  hosts: namenode
+  tasks:
+  - name: create software directory
+    file:
+      path: /hadoop_soft
+      state: directory
+
+  - name: checking jdk is installed or not
+    command: jps
+    register: available_jdk
+    ignore_errors: yes
+    
+  - name: checking hadoop is installed or not
+    command: hadoop version
+    register: available_hadoop
+    ignore_errors: yes
+
+  - name: copy hadoop and jdk software
+    copy:
+      src: /root/hadoop_configure_using_ansible/softwares/
+      dest: /hadoop_soft/ 
+    when: available_jdk.rc != 0 or available_hadoop.rc != 0
+
+  - name: install the jdk
+    command: rpm -i /hadoop_soft/jdk-8u171-linux-x64.rpm
+    register: jdk_var
+    when: available_jdk.rc != 0 
+
+  - name: install hadoop
+    command: rpm -i /hadoop_soft/hadoop-1.2.1-1.x86_64.rpm --force
+    register: installed_hadoop
+    when: available_hadoop.rc != 0
+
+  - name: copy hdfs-site.xml to /etc/hadoop folder
+    template:
+      src: namenode_hdfs-site.xml
+      dest: /etc/hadoop/hdfs-site.xml
+
+  - name: create namenode directory
+    file:
+      path: /nn
+      state: directory
+   
+  - name: copy core-site.xml to /etc/hadoop folder
+    template:
+      src: namenode_core-site.xml
+      dest: /etc/hadoop/core-site.xml
+
+  - name: format the namenode directory
+    shell: 'echo "Y" | hadoop namenode -format' 
+    register: namenode_formatted
+
+  - name: start namenode daemon
+    command: hadoop-daemon.sh start namenode
+    when: namenode_formatted.rc == 0

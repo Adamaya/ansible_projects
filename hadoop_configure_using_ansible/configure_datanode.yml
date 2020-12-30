@@ -1,0 +1,51 @@
+- name: Configure Datanode
+  hosts: datanode 
+  tasks:
+  - name: create software directory
+    file:
+      path: /hadoop_soft
+      state: directory
+
+  - name: checking jdk is installed or not
+    command: jps
+    register: available_jdk
+    ignore_errors: yes
+    
+  - name: checking hadoop is installed or not
+    command: hadoop version
+    register: available_hadoop
+    ignore_errors: yes
+
+  - name: copy hadoop and jdk software
+    copy:
+      src: /root/hadoop_configure_using_ansible/softwares/
+      dest: /hadoop_soft/
+    when: available_jdk.rc != 0 or available_hadoop.rc != 0
+  
+  - name: installing the jdk
+    command: rpm -i /hadoop_soft/jdk-8u171-linux-x64.rpm
+    when: available_jdk.rc != 0
+
+  - name: install hadoop
+    command: rpm -i /hadoop_soft/hadoop-1.2.1-1.x86_64.rpm --force
+    when: available_hadoop.rc != 0
+
+  - name: copy hdfs-site.xml to /etc/hadoop folder
+    template:
+      src: datanode_hdfs-site.xml
+      dest: /etc/hadoop/hdfs-site.xml
+
+  - name: copy core-site.xml to /etc/hadoop folder
+    template:
+      src: datanode_core-site.xml
+      dest: /etc/hadoop/core-site.xml
+
+  - name: create software directory
+    file:
+      path: /dn1
+      state: directory
+
+  - name: start datanode daemon
+    command: hadoop-daemon.sh start datanode
+
+         
