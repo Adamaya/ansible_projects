@@ -1,0 +1,13 @@
+- hosts: master
+  tasks:
+  - name: retreiving the masternode joining string
+    command: 'kubeadm token create --print-join-command'
+    register: join_cmd
+
+- hosts: slave
+  roles:
+  - role: k8s-slave-node
+  tasks:
+  - name: joining the cluster
+    command:  "{{ hostvars[item]['join_cmd']['stdout'] }}" 
+    with_items:  "{{ groups['master'] }}"
