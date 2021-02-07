@@ -1,0 +1,78 @@
+- hosts: master
+  become: yes
+  tasks:
+  - name: installing docker in master node
+    yum:
+      name: docker
+      state: present
+
+  - name: enabling and starting docker daemon
+    service:
+      name: docker
+      state: started
+      enabled: yes
+
+  - name: copying kubernetes.repo file into /etc/yum.repos.d/ directory
+    copy:
+      src: kubernetes.repo
+      dest: /etc/yum.repos.d/kubernetes.repo
+
+  - name: installing kubeadm kubelet kubectl
+    yum:
+      name:
+        - kubelet
+        - kubeadm
+        - kubectl
+        - iproute-tc
+      state: present
+      disable_excludes: kubernetes
+  
+   
+  - name: enabling and starting kubelet daemon
+    service:
+      name: kubelet
+      state: started
+      enabled: yes
+
+  - name: downloading kubeadm config images
+    command: "kubeadm config images pull"
+
+  - name: changing docker network driver from cgroup to systemd
+    copy:
+      src: daemon.json
+      dest: /etc/docker/daemon.json
+  
+  - name: enabling and starting kubelet daemon
+    service:
+      name: docker
+      state: restarted
+
+  - name: modifying iproute-tc settings
+    copy:
+      src: k8s.conf
+      dest: /etc/sysctl.d/k8s.conf 
+
+  - name: restarting sysctl
+    command: "sysctl --system"
+  
+  - name: configuring cluster
+    shell: 'kubeadm init --pod-network-cidr=10.240.0.0/16 --ignore-preflight-errors=NumCPU --ignore-preflight-errors=Mem'
+    ignore_errors: yes
+
+  - name: creating .kube directory
+    file:
+      path: $HOME/.kube
+      state: directory
+
+  - name: copying admin.conf to .kube
+    command: "cp -i /etc/kubernetes/admin.conf $HOME/.kube/config"
+
+  - name: configuring flannel
+    shell: 'kubectl apply  -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml'
+
+  - name: obtaining cluster joining 
+    command: 'kubeadm token create --print-join-command'
+    register: joincmd
+
+  - debug:
+      var: joincmd
