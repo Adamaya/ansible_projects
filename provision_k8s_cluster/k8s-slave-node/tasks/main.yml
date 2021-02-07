@@ -1,6 +1,6 @@
 ---
 # tasks file for k8s-slave-node
-- name: installing docker in master node
+- name: installing docker in slave node
   yum:
     name: docker
     state: present
@@ -50,3 +50,4 @@
 - name: restarting sysctl
   command: "sysctl --system"
   
+ 
