@@ -1,4 +1,6 @@
 - hosts: master
+  roles:
+  - role: k8s-master-node
   tasks:
   - name: retreiving the masternode joining string
     command: 'kubeadm token create --print-join-command'
