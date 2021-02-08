@@ -1,0 +1,10 @@
+---
+# vars file for ec2-instance
+access_key: ""
+secret_key: ""
+region: "ap-south-1"
+instance_type: "t2.micro"
+image_id: "ami-08e0ca9924195beba"
+subnet_id: "subnet-bbf5cfd3"
+sg: "sg-0950ff38c38813e45"
+key: "new_key_pair"

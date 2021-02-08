@@ -6,7 +6,7 @@
     command: 'kubeadm token create --print-join-command'
     register: join_cmd
 
-- hosts: slave
+- hosts: slaves
   roles:
   - role: k8s-slave-node
   tasks:

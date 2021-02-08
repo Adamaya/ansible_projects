@@ -1,0 +1,56 @@
+---
+# tasks file for ec2-instance
+- name: 
+  ec2_instance:
+    region: "{{ region }}"
+    image_id: "{{ image_id }}"
+    instance_type: "{{ instance_type }}"
+    vpc_subnet_id: "{{ subnet_id }}"
+    security_group: "{{ sg }}"
+    key_name: "{{ key }}"
+    name: "k8s-master"
+    state: present
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+  register: master_instance
+
+- name: provisioning of first worker node instance
+  ec2_instance:
+
+    region: "{{ region }}"
+    image_id: "{{ image_id }}"
+    instance_type: "{{ instance_type }}"
+    vpc_subnet_id: "{{ subnet_id }}"
+    security_group: "{{ sg }}"
+    key_name: "{{ key }}"
+    name: "k8s-slave-1"
+    state: present
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+  register: slave_instance1
+
+- name: provisioning of second worker node instance
+  ec2_instance:
+
+    region: "{{ region }}"
+    image_id: "{{ image_id }}"
+    instance_type: "{{ instance_type }}"
+    vpc_subnet_id: "{{ subnet_id }}"
+    security_group: "{{ sg }}"
+    key_name: "{{ key }}"
+    name: "k8s-slave-2"
+    state: present
+    aws_access_key: "{{ access_key }}"
+    aws_secret_key: "{{ secret_key }}"
+  register: slave_instance2
+
+- name: updating inventory
+  blockinfile:
+    path: inventory 
+    block: |
+      [master]
+      {{  master_instance.instances[0].public_ip_address }} 
+      [slaves]
+      {{  slave_instance1.instances[0].public_ip_address }} 
+      {{  slave_instance2.instances[0].public_ip_address }} 
+
