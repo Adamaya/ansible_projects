@@ -26,3 +26,6 @@ kubectl get nodes
 ```
 ## Author
 [Adamaya Sharma](https://www.linkedin.com/in/adamaya-sharma/)
+
+## Implementation Video
+[click here](https://www.linkedin.com/posts/activity-6764849188644687872-fw1E) to watch video
