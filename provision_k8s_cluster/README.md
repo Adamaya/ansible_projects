@@ -1,5 +1,6 @@
 # Configure k8s Multinode Cluster on the top of EC2 instance using Ansible Automation tool.
 these script are created to implement Kubernetes Multinode Cluster using Ansible Automation tool.
+![multi_node_k8s_cluster_architecture](multi_node_k8s_cluster.gif)
 
 ## Steps to implement.
 - clone the repository.
