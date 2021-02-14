@@ -1,0 +1,13 @@
+- hosts: localhost
+  vars_files:
+  - "{{ ansible_facts['distribution'] }}_vars"
+  tasks:
+  - name: installng web server
+    package:
+      name: "{{ webserver }}"
+      state: present
+
+  - name: start the service
+    service:
+      name: "{{ webserver }}"
+      state: started
