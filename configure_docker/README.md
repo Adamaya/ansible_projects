@@ -1,6 +1,4 @@
 # Configure docker, launch a container using ansible, and update the inventory dynamically.
-these script are created to implement Kubernetes Multinode Cluster using Ansible Automation tool.
-![multi_node_k8s_cluster_architecture](multi_node_k8s_cluster.gif)
 
 ## Steps to implement.
 - clone the repository.
