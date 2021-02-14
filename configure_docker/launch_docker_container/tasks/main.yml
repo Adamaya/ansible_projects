@@ -1,0 +1,38 @@
+---
+# tasks file for launch_docker_container
+- name: creating web directory in base system
+  file:
+    path: "/webpage"
+    state: directory
+
+- name: copying web app code to web directory
+  copy:
+    src: "index.html"
+    dest: "/webpage"
+  
+- name: logging into dockerhub
+  docker_login:
+    username: "{{ uname }}"
+    password: "{{ pword }}"
+  ignore_errors: yes
+
+- name: launching httpd container 
+  docker_container:
+    name: httpd_container
+    image: httpd
+    state: started
+    recreate: yes
+    ports:               
+      - "8091:80"
+    volumes:
+      - /webpage:/usr/local/apache2/htdocs
+  register: container
+
+- name: updating inventory
+  blockinfile:
+    path: inventory
+    block: |
+      [httpd]
+      {{ container.ansible_facts.docker_container.NetworkSettings.IPAddress }}
+     
+

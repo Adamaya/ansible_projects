@@ -1,7 +1,7 @@
 ---
 # vars file for ec2-instance
-access_key: ""
-secret_key: ""
+access_key: "AKIAVTZV5EKI34DVUVWO"
+secret_key: "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"
 region: "ap-south-1"
 instance_type: "t2.micro"
 image_id: "ami-08e0ca9924195beba"
