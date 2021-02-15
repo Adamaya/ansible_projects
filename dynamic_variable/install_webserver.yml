@@ -1,4 +1,4 @@
-- hosts: localhost
+- hosts: rpi
   vars_files:
   - "{{ ansible_facts['distribution'] }}_vars"
   tasks:

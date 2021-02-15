@@ -1,0 +1,6 @@
+- hosts: localhost
+  roles:
+  - role: ec2-instance
+  tasks:
+  - debug:
+      msg: "instances launched over the aws"

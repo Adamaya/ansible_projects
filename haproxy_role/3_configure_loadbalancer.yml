@@ -1,0 +1,6 @@
+- hosts: loadbalancer
+  roles:
+  - role: configure_loadbalancer
+  tasks:
+  - debug:
+      msg: "ip of load balancer: {{ groups['loadbalancer'] }}"
