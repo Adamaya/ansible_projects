@@ -1,0 +1,2 @@
+[Rpi]
+192.168.43.65	ansible_remote_user=pi ansible_ssh_pass=raspberry

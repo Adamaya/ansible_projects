@@ -1,0 +1,45 @@
+- hosts: Rpi
+  tasks:
+  - name: installing nfs exfat utilities
+    package:
+      name:
+        - ntfs-3g
+        - exfat-fuse
+        - exfat-utils
+      state: present
+       
+  - name: installing samba server
+    package:
+      name:
+        - samba
+        - samba-common-bin
+      state: present
+
+  - name: creating NasDirectory
+    file:
+      path: /NasServer
+      state: directory
+      mode: '0777'
+
+  - name: mounting the hardisk
+    mount:
+      path: /NasServer
+      src: /dev/sda1
+      fstype: iso9660
+      state: mounted
+  
+  - name: configuring smb.conf file
+    copy:
+      src: smb.conf
+      dest: /etc/samba/smb.conf
+
+  - name: restarting the samba server
+    service:
+      name: smbd
+      state: restarted
+
+  - name: setting smbpasswd
+    shell: printf 'rasp\nrasp' | sudo smbpasswd -a pi
+
+  - debug:
+      msg: 'Nas Server configured'
