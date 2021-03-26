@@ -1,0 +1,18 @@
+- hosts: localhost
+  tasks:
+  - name: installing httpd
+    package:
+      name: httpd
+      state: present
+
+  - name: checking httpd running or not
+    command:
+      cmd: "curl {{ ansible_facts['default_ipv4']['address'] }}:80"
+    register: x
+    ignore_errors: yes
+
+  - name: restarting httpd service
+    service:
+      name: httpd
+      state: restarted
+    when: x.rc != 0
